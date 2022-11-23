@@ -14,29 +14,23 @@ const courseSchema = new Schema({
 
 courseSchema.static.ReturnFaces = async function(usn, descriptions) {
     try {
-      let student = await this.findOne({ code:code }).populate('enrolled');
-      student.descriptions = student.descriptions.concat(descriptions);
-      student.save();
+      let students = await this.findOne({ code:code }).populate('enrolled',{label:1,descriptions:1,_id:0});
+      return students;
     } 
     catch (e) {
       console.log(e);
       return 0;
     }
-  
-    return 1;
 };
 courseSchema.static.getInfo = async function(usn, descriptions) {
     try {
-      let student = await this.findOne({ usn: usn });
-      student.descriptions = student.descriptions.concat(descriptions);
-      student.save();
+      let course = await this.findOne({ code:code });
+      return course
     } 
     catch (e) {
       console.log(e);
       return 0;
     }
-  
-    return 1;
 };
 
 const courseModel=model("Courses",courseSchema)

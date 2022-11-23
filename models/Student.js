@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const studentSchema = new mongoose.Schema({
-  usn: {
+  label: {
     type: String,
     required: true,
     unique: true,
@@ -22,7 +22,7 @@ const studentModel = mongoose.model("Student", studentSchema);
 
 studentSchema.static.addFace = async function(usn, descriptions) {
   try {
-    let student = await this.findOne({ usn: usn });
+    let student = await this.findOne({ label: usn });
     student.descriptions = student.descriptions.concat(descriptions);
     student.save();
   } 
