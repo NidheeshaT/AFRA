@@ -12,7 +12,7 @@ const courseSchema = new Schema({
       enrolled:[{ type: Schema.Types.ObjectId, ref: 'Course' }],
 });
 
-courseSchema.static.ReturnFaces = async function(usn, descriptions) {
+courseSchema.statics.ReturnFaces = async function(usn, descriptions) {
     try {
       let students = await this.findOne({ code:code }).populate('enrolled',{label:1,descriptions:1,_id:0});
       return students;
@@ -22,7 +22,7 @@ courseSchema.static.ReturnFaces = async function(usn, descriptions) {
       return 0;
     }
 };
-courseSchema.static.getInfo = async function(usn, descriptions) {
+courseSchema.statics.getInfo = async function(usn, descriptions) {
     try {
       let course = await this.findOne({ code:code });
       return course

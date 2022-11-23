@@ -2,14 +2,15 @@
   "name": "face-recognition-nodejs",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start":"node app.js",
-    "devstart":"nodemon app.js"
+    "start": "node index.js",
+    "devstart": "nodemon index.js"
   },
   "author": "Zulkarnine",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.0",
     "canvas": "^2.10.2",
     "express": "^4.18.2",
     "express-fileupload": "^1.4.0",

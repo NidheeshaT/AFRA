@@ -20,7 +20,7 @@ const studentSchema = new mongoose.Schema({
 
 const studentModel = mongoose.model("Student", studentSchema);
 
-studentSchema.static.addFace = async function(usn, descriptions) {
+studentSchema.statics.addFace = async function(usn, descriptions) {
   try {
     let student = await this.findOne({ label: usn });
     student.descriptions = student.descriptions.concat(descriptions);

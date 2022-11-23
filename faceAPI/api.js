@@ -7,6 +7,13 @@ const Course=require("../models/Course")
 
 faceapi.env.monkeyPatch({ Canvas, Image });
 
+
+async function run()
+{
+  await LoadModels()
+}
+run()
+
 async function LoadModels() {
   await faceapi.nets.faceRecognitionNet.loadFromDisk(__dirname + "/models");
   await faceapi.nets.faceLandmark68Net.loadFromDisk(__dirname + "/models");
