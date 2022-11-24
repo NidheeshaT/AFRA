@@ -14,7 +14,7 @@ const courseSchema = new Schema({
 
 courseSchema.statics.ReturnFaces = async function(usn, descriptions) {
     try {
-      let students = await this.findOne({ code:code }).populate('enrolled',{label:1,descriptions:1,_id:0});
+      let students = await this.findOne({ code:code }).populate('enrolled',{label:1,descriptions:1,_id:0,__v:0});
       return students;
     } 
     catch (e) {

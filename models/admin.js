@@ -32,12 +32,13 @@ adminSchema.statics.addAdmin = async function(admin) {
     return 1;
 };
 
-studentSchema.statics.getAdmin = async function(id,password) {
+adminSchema.statics.getAdmin = async function(id,password) {
     try {
-        let admin=this.findOne({id:id},{_id:0})
+        let admin=await this.findOne({id:id},{_id:0,__v:0,id:0})
+        
         if(bcrypt.compareSync(password,admin.password))
         {
-            delete admin.password
+            admin.password=undefined;
             return admin
         }
         else{
@@ -49,3 +50,6 @@ studentSchema.statics.getAdmin = async function(id,password) {
       return 0;
     }
 };
+
+const adminModel=mongoose.model("admin",adminSchema)
+module.exports=adminModel

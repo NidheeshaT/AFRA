@@ -21,7 +21,7 @@ const enrollerSchema = new mongoose.Schema({
       }
 });
 
-studentSchema.statics.addEnroller = async function(enroller) {
+enrollerSchema.statics.addEnroller = async function(enroller) {
     try {
         enroller.password=bcrypt.hashSync(enroller.password,salt)
         await this.create(enroller);
@@ -34,13 +34,13 @@ studentSchema.statics.addEnroller = async function(enroller) {
     return 1;
 };
 
-studentSchema.statics.getEnroller = async function(id,password) {
+enrollerSchema.statics.getEnroller = async function(id,password) {
     try {
-        let enroller=this.findOne({id:id},{_id:0})
+        let enroller=this.findOne({id:id},{_id:0,__v:0})
 
         if(bcrypt.compareSync(password,enroller.password))
         {
-            delete enroller.password
+            enroller.password=undefined
             return enroller
         }
         else{
