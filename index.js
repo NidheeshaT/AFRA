@@ -1,9 +1,11 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const fileUpload = require("express-fileupload");
-const {faceapi,storeImages,LoadModels}=require('./faceAPI/api')
+const {faceapi}=require('./faceAPI/api')
+
 const app = express();
 const authRouter=require("./routes/auth")
+const dataRouter=require("./routes/data")
 
 app.use(
   fileUpload({
@@ -14,11 +16,9 @@ app.use(
 app.use(express.json())
 
 app.use(authRouter)
+app.use(dataRouter)
 
 
-
-
-// add your mongo key instead of the ***
 mongoose
 .connect('mongodb://localhost:27017/AFRA',).then(() => {
     app.listen(process.env.PORT || 80);

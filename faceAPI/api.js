@@ -22,7 +22,7 @@ async function LoadModels() {
   console.log("loaded");
 }
 
-async function storeImages(images, label) {
+async function getDes(images) {
   try {
     const descriptions = [];
     for (let i = 0; i < images.length; i++) {
@@ -33,28 +33,26 @@ async function storeImages(images, label) {
         .withFaceDescriptor();
       descriptions.push(detections.descriptor);
     }
-    return 1;
+    return descriptions;
   } catch (error) {
     console.log(error);
     return 0;
   }
 }
 
-async function matchFace(course, faceImage) {
-  let faces = await Course.find();
+async function matchFace(faces, image) {
 
+  let f=[];
   for (i = 0; i < faces.length; i++) {
-    for (j = 0; j < faces[i].descriptions.length; j++) {
-      faces[i].descriptions[j] = new Float32Array(
-        Object.values(faces[i].descriptions[j])
-      );
-    }
-    faces[i] = new faceapi.LabeledFaceDescriptors(
-      faces[i].label,
-      faces[i].descriptions
-    );
+        for (j = 0; j < faces[i].descriptions.length; j++) {
+        faces[i].descriptions[j] = new Float32Array(
+            Object.values(faces[i].descriptions[j])
+        );
+        }
+        f.push ( new faceapi.LabeledFaceDescriptors(faces[i].label, faces[i].descriptions))
+            console.log(f[i])
   }
-  const faceMatcher = new faceapi.FaceMatcher(faces, 0.6);
+  const faceMatcher = new faceapi.FaceMatcher(f, 0.6);
   const img = await canvas.loadImage(image);
   let temp = faceapi.createCanvasFromMedia(img);
   const displaySize = { width: img.width, height: img.height };
@@ -71,4 +69,4 @@ async function matchFace(course, faceImage) {
   return results;
 }
 
-module.exports = { faceapi, storeImages, LoadModels };
+module.exports = { faceapi,matchFace, getDes, LoadModels };
