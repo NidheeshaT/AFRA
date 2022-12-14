@@ -15,12 +15,14 @@ const adminSchema = new mongoose.Schema({
     password:{
         type:String,
         required:true
-    }
+    },
+    isAdmin:{type:Boolean,default:()=>true}
 });
 
 
 adminSchema.statics.addAdmin = async function(admin) {
     try {
+        admin.isAdmin=true
         admin.password=bcrypt.hashSync(admin.password,salt)
         await this.create(admin);
     } 

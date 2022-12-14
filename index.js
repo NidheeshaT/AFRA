@@ -2,10 +2,13 @@ const express = require("express");
 const mongoose = require("mongoose");
 const fileUpload = require("express-fileupload");
 const {faceapi}=require('./faceAPI/api')
+require('dotenv').config()
+const sessionConnection=require("./db/connect")
 
 const app = express();
 const authRouter=require("./routes/auth")
-const dataRouter=require("./routes/data")
+const adminRouter=require("./routes/admin")
+const enrollerRouter=require("./routes/enroller")
 
 app.use(
   fileUpload({
@@ -13,17 +16,12 @@ app.use(
   })
 );
 
+app.use(sessionConnection)
 app.use(express.json())
 
 app.use(authRouter)
-app.use(dataRouter)
+app.use(enrollerRouter)
+app.use(adminRouter)
 
 
-mongoose
-.connect('mongodb://localhost:27017/AFRA',).then(() => {
-    app.listen(process.env.PORT || 80);
-    console.log("DB connected and server us running.");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+app.listen(process.env.PORT || 80);

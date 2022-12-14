@@ -32,9 +32,9 @@ courseSchema.statics.returnFaces = async function(code) {
       return 0;
     }
 };
-courseSchema.statics.getInfo = async function(usn, descriptions) {
+courseSchema.statics.getInfo = async function(code) {
     try {
-      let course = await this.findOne({ code:code });
+      let course = await this.findOne({ code:code },{_id:0,__v:0}).populate({path:'enrolled',select:{'label':1,'_id':0}});
       return course
     } 
     catch (e) {

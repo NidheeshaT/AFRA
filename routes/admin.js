@@ -1,18 +1,20 @@
 const {Router}=require("express")
 const Student=require("../models/Student")
 const Course=require("../models/Course")
-const {getDes,matchFace}=require("../faceAPI/api")
-const { default: mongoose } = require("mongoose")
-
+const {getDes}=require("../faceAPI/api")
+const {authAdmin}=require('../middleware/auth')
+const fs=require('fs')
+const path = require("path")
 const router=Router()
 
+router.use(authAdmin)
 router.post("/addStudent",async(req,res)=>{
     const student=req.body;
     let images=[];
-
     Object.values(req.files).map(file => {
         images.push(file.tempFilePath)
     });
+
 
     const des=await getDes(images)
 
@@ -56,37 +58,5 @@ router.post("/addCourse",async(req,res)=>{
     }
 })
 
-router.post("/enrollStudents",async(req,res)=>{
-    const usn=req.body.usn;
-    const code=req.body.code;
 
-    try{
-
-        const data=await Course.addStudents(code,usn)
-        if(data)
-            res.send("student added successfully")
-        else
-            res.send("cant add student")
-    }
-    catch(e)
-    {
-        console.log(e)
-        res.sendStatus(500)
-    }
-})
-
-router.post("/compareStudents",async(req,res)=>{
-    const code=req.body.code;
-
-    let images;
-
-    Object.values(req.files).map(file => {
-        images=file.tempFilePath
-    });
-
-    let faces = await Course.returnFaces(code);
-    const matches=await matchFace(faces,images)
-
-    res.send(matches)
-})
 module.exports=router

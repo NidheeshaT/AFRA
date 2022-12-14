@@ -1,4 +1,4 @@
-const {Router, application}=require("express")
+const {Router}=require("express")
 const Admin=require("../models/admin")
 const Enroller=require("../models/Enroller")
 
@@ -12,18 +12,17 @@ router.post('/admin',async (req,res)=>{
         let admin=await Admin.getAdmin(id,password)
         if(admin)
         {
+            req.session.user=admin
             res.send(admin)
             return
         }
-        else{
-            res.send({error:"Incorrect password or username"})
-        }
+        res.status(400).send({error:"Incorrect password or username"})
     }
     catch(e)
     {
         console.log(e)
+        res.sendStatus(404)
     }
-    res.sendStatus(404)
 })
 
 router.post('/login',async(req,res)=>{
@@ -34,11 +33,12 @@ router.post('/login',async(req,res)=>{
         let enroller=await Admin.getEnroller(id,password)
         if(enroller)
         {
+            req.session.user=enroller
             res.send(enroller)
             return
         }
         else{
-            res.send({error:"Incorrect password or username"}).sendStatus(401)
+            res.status(401).send({error:"Incorrect password or username"})
         }
     }
     catch(e)
@@ -55,15 +55,15 @@ router.post('/register',async (req,res)=>{
         const status=await Enroller.addEnroller(req.body)
         if(status)
         {
-            res.send({status:success})
+            res.send("registered successfully")
+            return
         }
-        else{
-            res.sendStatus(400).send({error:"Bad request"})
-        }
+        
+        res.sendStatus(400)
     }
     catch(e)
     {
-        console.log(e)
+        console.log(e.message)
         res.sendStatus(500)
     }
 })
