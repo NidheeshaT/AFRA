@@ -1,7 +1,6 @@
 const auth=(req,res,next)=>{
     if(req.session.user)
     {
-        console.log(req.session)
         next()
     }
     else{
@@ -11,7 +10,6 @@ const auth=(req,res,next)=>{
 const authAdmin=(req,res,next)=>{
     if(req.session.user.isAdmin)
     {
-        console.log(req.session)
         next()
     }
     else{

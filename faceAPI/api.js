@@ -50,7 +50,6 @@ async function matchFace(faces, image) {
         );
         }
         f.push ( new faceapi.LabeledFaceDescriptors(faces[i].label, faces[i].descriptions))
-            console.log(f[i])
   }
   const faceMatcher = new faceapi.FaceMatcher(f, 0.6);
   const img = await canvas.loadImage(image);

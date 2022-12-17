@@ -15,9 +15,26 @@ const studentSchema = new mongoose.Schema({
   descriptions: {
     type: Array,
     required: true,
+  },
+  image:{
+    type:String
   }
 });
 
+
+studentSchema.statics.addStudent = async function(student) {
+  try {
+    let studentNew=await this.create(student)
+    studentNew.__v=undefined
+    studentNew.descriptions=undefined
+    return studentNew
+  } 
+  catch (e) {
+    console.log(e.message);
+    return 0;
+  }
+
+};
 
 studentSchema.statics.addFace = async function(usn, descriptions) {
   try {

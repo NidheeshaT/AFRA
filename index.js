@@ -10,6 +10,7 @@ const authRouter=require("./routes/auth")
 const adminRouter=require("./routes/admin")
 const enrollerRouter=require("./routes/enroller")
 
+app.use(express.static('upload'))
 app.use(
   fileUpload({
     useTempFiles: true,

@@ -27,7 +27,7 @@ enrollerSchema.statics.addEnroller = async function(enroller) {
         await this.create(enroller);
     } 
     catch (e) {
-      console.log(e);
+      console.log(e.message);
       return 0;
     }
   
@@ -36,7 +36,7 @@ enrollerSchema.statics.addEnroller = async function(enroller) {
 
 enrollerSchema.statics.getEnroller = async function(id,password) {
     try {
-        let enroller=this.findOne({id:id},{_id:0,__v:0})
+        let enroller=await this.findOne({id:id},{_id:0,__v:0})
 
         if(bcrypt.compareSync(password,enroller.password))
         {

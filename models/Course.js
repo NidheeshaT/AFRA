@@ -24,7 +24,6 @@ const courseSchema = new Schema({
 courseSchema.statics.returnFaces = async function(code) {
     try {
       let students = await this.findOne({ code:code }).populate({path:'enrolled',select:['label','descriptions']});
-      console.log(students.enrolled)
       return students.enrolled;
     } 
     catch (e) {
@@ -42,13 +41,11 @@ courseSchema.statics.getInfo = async function(code) {
       return 0;
     }
 };
-courseSchema.statics.addStudents = async function(code,subSection,usn) {
+courseSchema.statics.addStudents = async function(code,usn) {
     try {
-      let course = await this.findOne({ code:code,subSection:subSection });
-      usn.forEach(async (usn) => {
-          let student=await Student.findOne({label:usn})
-          course.enrolled.push(student._id)
-      });
+      let course = await this.findOne({ code:code });
+      let student=await Student.findOne({label:usn})
+      course.enrolled.push(student._id)
       course.save()
       return 1
     } 

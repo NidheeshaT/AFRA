@@ -3,7 +3,7 @@ const Admin=require("../models/admin")
 const Enroller=require("../models/Enroller")
 
 const router=Router()
-// Admin.addAdmin({id:"nagaraj",password:"nidheesha",name:"Admin"})
+// Admin.addAdmin({id:"admin",password:"admin",name:"Admin"})
 router.post('/admin',async (req,res)=>{
     try{
 
@@ -30,7 +30,7 @@ router.post('/login',async(req,res)=>{
 
         let id=req.body.id;
         let password=req.body.password;
-        let enroller=await Admin.getEnroller(id,password)
+        let enroller=await Enroller.getEnroller(id,password)
         if(enroller)
         {
             req.session.user=enroller

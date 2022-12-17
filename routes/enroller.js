@@ -6,11 +6,11 @@ const router = require("./auth")
 const Student = require("../models/Student")
 
 router.use(auth)
-router.post("/enrollStudents",async(req,res)=>{
-    const usn=req.body.usn;
-    const code=req.body.code;
-
+router.post("/enrollStudent",async(req,res)=>{
+    
     try{
+        const usn=req.body.usn;
+        const code=req.body.code;
 
         const data=await Course.addStudents(code,usn)
         if(data)
@@ -25,7 +25,7 @@ router.post("/enrollStudents",async(req,res)=>{
     }
 })
 
-router.post("/getVerification",async(req,res)=>{
+router.post("/verify",async(req,res)=>{
     try{
 
         const code=req.body.code;
@@ -42,7 +42,8 @@ router.post("/getVerification",async(req,res)=>{
         res.send(matches)
     }
     catch(e){
-        e.sendStatus(500)
+        console.log(e)
+        res.sendStatus(500)
     }
 })
 
@@ -50,9 +51,11 @@ router.post("/getCourse",async(req,res)=>{
     try{
 
         const code=req.body.code;
-        let course = await Course.getInfo(code);
-    
-        res.send(course)
+        const course = await Course.getInfo(code);
+        if(course)
+            res.send(course)
+        else
+            res.sendStatus(404)
     }
     catch(e)
     {
