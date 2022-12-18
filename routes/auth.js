@@ -4,6 +4,14 @@ const Enroller=require("../models/Enroller")
 
 const router=Router()
 // Admin.addAdmin({id:"admin",password:"admin",name:"Admin"})
+router.get('/',async(req,res)=>{
+    if(req.session.user && req.session.user.isAdmin)
+    {
+        res.send(req.session.user)
+        return
+    }
+    res.send(false)
+})
 router.post('/admin',async (req,res)=>{
     try{
         if(req.session.user && req.session.user.isAdmin)
@@ -63,7 +71,7 @@ router.post('/register',async (req,res)=>{
         const status=await Enroller.addEnroller(req.body)
         if(status)
         {
-            res.send("registered successfully")
+            res.send({status:true,message:"registered successfully"})
             return
         }
         
@@ -72,7 +80,7 @@ router.post('/register',async (req,res)=>{
     catch(e)
     {
         console.log(e.message)
-        res.sendStatus(500)
+        res.status(500).send({status:false,message:e.message})
     }
 })
 
