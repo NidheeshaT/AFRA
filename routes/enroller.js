@@ -4,6 +4,7 @@ const fs =require('fs')
 const {auth}=require('../middleware/auth')
 const router = require("./auth")
 const Student = require("../models/Student")
+const getURL = require("../ulilities/gsheets")
 
 router.use(auth)
 router.post("/enrollStudent",async(req,res)=>{
@@ -82,7 +83,26 @@ router.post("/getStudent",async(req,res)=>{
     }
 })
 
-// router.post("/getAttendance"
+router.post("/getAttendance",async(req,res)=>{
+    try{
+
+        const code=req.body.code;
+        let courseAttendance = await Course.returnAttendance(code);
+        let url=await getURL({code:code,enrolled:courseAttendance})
+        if(url.url)
+        {
+            res.send({url:url})
+        }
+        else{
+            res.sendStatus(500)
+        }
+    }
+    catch(e)
+    {
+        console.log(e.message)
+        res.sendStatus(500)
+    }
+})
 
 const clean=(req)=>{
     try{

@@ -88,7 +88,7 @@ courseSchema.statics.returnAttendance = async function(code){
         {
             let obj={}
             obj.label=course.enrolled[i].label
-            obj.attendToday=course.a;
+            obj.attendToday=course.attendToday[i];
             obj.attendTime=course.attendTime[i].toISOString()
             objs.push(obj)
         }

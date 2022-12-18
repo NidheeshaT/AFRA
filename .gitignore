@@ -3,3 +3,4 @@ images/
 tmp/
 upload/*
 test_images/
+.env

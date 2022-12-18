@@ -7,7 +7,7 @@
     "start": "node index.js",
     "devstart": "nodemon index.js"
   },
-  "author": "Zulkarnine",
+  "author": "NidsNagu",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
