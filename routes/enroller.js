@@ -35,7 +35,7 @@ router.post("/enrollStudent",async(req,res)=>{
 
 router.post("/verify",async(req,res)=>{
     try{
-
+        console.log("sdj")
         const code=req.body.code;
     
         let images;

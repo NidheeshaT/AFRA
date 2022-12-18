@@ -84,4 +84,14 @@ router.post('/register',async (req,res)=>{
     }
 })
 
+
+router.get('/logout',async(req,res)=>{
+    try{
+        req.session.destroy()
+        res.send({success:true,message:"logged out"})
+    }
+    catch{
+        res.send({success:false,message:"Bad request"})
+    }
+})
 module.exports=router

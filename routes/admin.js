@@ -45,10 +45,7 @@ router.post("/addStudent",async(req,res)=>{
         console.log(e.message)
         res.sendStatus(500)
     }
-    if(cache.code===code)
-    {
-        cache.code=''
-    }
+    cache.code=''
     clean(req)
 })
 
@@ -90,7 +87,7 @@ router.post("/addCourse",async(req,res)=>{
     {
         console.log(e)
 
-        res.status(403).send("duplication error")
+        res.status(403).send({message:"duplication error"})
     }
 })
 router.post("/addFaceDes",async(req,res)=>{
