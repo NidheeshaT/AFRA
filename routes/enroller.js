@@ -14,12 +14,11 @@ router.post("/enrollStudent",async(req,res)=>{
         
         const usn=req.body.usn;
         const code=req.body.code;
-
         const data=await Course.addStudents(code,usn)
         if(data)
-            res.send("student added successfully")
+            res.send({message:"student added successfully"})
         else
-            res.send("cant add student")
+            res.send({message:"cant add student"})
 
         if(cache.code===code)
         {
@@ -82,13 +81,19 @@ router.post("/getCourse",async(req,res)=>{
 
 })
 
-router.post("/getStudent",async(req,res)=>{
+router.post("/getStudents",async(req,res)=>{
     try{
 
-        const usn=req.body.usn;
-        let student = await Student.getStudent(usn);
-        console.log(student)
-        res.send(student)
+        const usns=req.body.usns;
+        let students=[]
+        console.log(usns)
+        for(let i=0;i<usns.length;i++)
+        {
+
+            students.push(await Student.getStudent(usns[i]));
+        }
+        console.log(students)
+        res.send(students)
     }
     catch(e)
     {

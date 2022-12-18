@@ -45,14 +45,15 @@ courseSchema.statics.addStudents = async function(code,usn) {
     try {
       let course = await this.findOne({ code:code });
       let student=await Student.findOne({label:usn})
-      course.enrolled.push(student._id)
-      course.attendToday.push(false)
-      course.attendTime.push(0)
+
+    course.enrolled.push(student._id)
+    course.attendToday.push(false)
+    course.attendTime.push(0)
       course.save()
       return 1
     } 
     catch (e) {
-      console.log(e.message);
+      console.log(e);
       return 0;
     }
 };

@@ -26,8 +26,7 @@ const studentSchema = new mongoose.Schema({
 studentSchema.statics.addStudent = async function(student,image) {
   try {
     let studentNew=await this.create(student)
-    studentNew.__v=undefined
-    studentNew.descriptions=undefined
+
     const stored=randomUUID().substring(0,10)+image.name
     const uploadPath='./upload/'+stored
     if(image.mimetype==='image/jpeg'||image.mimetype==='image/jpg'||image.mimetype==='image/png')
@@ -36,6 +35,9 @@ studentSchema.statics.addStudent = async function(student,image) {
     }
 
     studentNew.image=stored
+    await studentNew.save()
+    studentNew.__v=undefined
+    studentNew.descriptions=undefined
     return studentNew
   } 
   catch (e) {
@@ -61,6 +63,7 @@ studentSchema.statics.addFace = async function(usn, descriptions) {
 studentSchema.statics.getStudent = async function(usn) {
   try {
     let student = await this.findOne({ label: usn },{_id:0,__v:0,descriptions:0});
+    console.log(student)
     if(student)
         return student;
 

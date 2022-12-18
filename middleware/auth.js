@@ -8,6 +8,7 @@ const auth=(req,res,next)=>{
     }
 }
 const authAdmin=(req,res,next)=>{
+    console.log(req.session.user)
     if(req.session.user.isAdmin)
     {
         next()
