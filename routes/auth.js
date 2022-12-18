@@ -6,7 +6,11 @@ const router=Router()
 // Admin.addAdmin({id:"admin",password:"admin",name:"Admin"})
 router.post('/admin',async (req,res)=>{
     try{
-
+        if(req.session.user && req.session.user.isAdmin)
+        {
+            res.send(req.session.user)
+            return
+        }
         let id=req.body.id;
         let password=req.body.password;
         let admin=await Admin.getAdmin(id,password)
@@ -27,7 +31,11 @@ router.post('/admin',async (req,res)=>{
 
 router.post('/login',async(req,res)=>{
     try{
-
+        if(req.session.user && req.session.user.isAdmin)
+        {
+            res.send(req.session.user)
+            return
+        }
         let id=req.body.id;
         let password=req.body.password;
         let enroller=await Enroller.getEnroller(id,password)

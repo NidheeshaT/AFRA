@@ -5,11 +5,13 @@ const {auth}=require('../middleware/auth')
 const router = require("./auth")
 const Student = require("../models/Student")
 const getURL = require("../ulilities/gsheets")
+const cache = require("../ulilities/cache")
 
 router.use(auth)
 router.post("/enrollStudent",async(req,res)=>{
     
     try{
+        
         const usn=req.body.usn;
         const code=req.body.code;
 
@@ -18,6 +20,11 @@ router.post("/enrollStudent",async(req,res)=>{
             res.send("student added successfully")
         else
             res.send("cant add student")
+
+        if(cache.code===code)
+        {
+            cache.code=''
+        }
     }
     catch(e)
     {
@@ -36,9 +43,16 @@ router.post("/verify",async(req,res)=>{
         Object.values(req.files).map(file => {
             images=file.tempFilePath
         });
-    
-        let faces = await Course.returnFaces(code);
-        const matches=await matchFace(faces,images)
+        let faces;
+        if(cache.code!==code)
+        {
+            faces = await Course.returnFaces(code);
+
+        }
+        else{
+            faces=cache.faces
+        }
+        const matches=await matchFace(code,faces,images)
         Course.addAttendance(code,matches);
 
         res.send(matches)
@@ -65,7 +79,7 @@ router.post("/getCourse",async(req,res)=>{
         console.log(e.message)
         res.sendStatus(500)
     }
-    clean(req)
+
 })
 
 router.post("/getStudent",async(req,res)=>{
@@ -115,5 +129,33 @@ const clean=(req)=>{
         console.log(e.message)
     }
 }
+
+router.post("/verifywithDes",async(req,res)=>{
+    try{
+
+        const code=req.body.code;
+        const detections=req.body.detections;
+        let faces;
+        if(cache.code!==code)
+        {
+            faces = await Course.returnFaces(code);
+
+        }
+        else{
+            faces=cache.faces
+        }
+        mat
+        const matches=await matchFaceDes(code,faces,images)
+        Course.addAttendance(code,matches);
+
+        res.send(matches)
+    }
+    catch(e){
+        console.log(e)
+        res.sendStatus(500)
+    }
+})
+
+
 
 module.exports=router

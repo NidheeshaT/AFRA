@@ -67,7 +67,6 @@ courseSchema.statics.addAttendance = async function(code,matches){
                 {
                     course.attendToday[i]=true;
                     course.attendTime[i]=Date.now()
-                    console.log(course.attendTime[i])
                 }
             }
         });

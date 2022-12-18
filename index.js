@@ -3,14 +3,21 @@ const mongoose = require("mongoose");
 const fileUpload = require("express-fileupload");
 const {faceapi}=require('./faceAPI/api')
 require('dotenv').config()
-const sessionConnection=require("./db/connect")
-const cors=require("cors")
+
 const app = express();
+const cors=require("cors")
+app.use(cors(  {
+    origin: 'http://localhost:3000',
+    // (origin,callback)=>{return callback(null,true)},
+    credentials:true
+  }))
+
+const sessionConnection=require("./db/connect")
 const authRouter=require("./routes/auth")
 const adminRouter=require("./routes/admin")
 const enrollerRouter=require("./routes/enroller");
 
-app.use(cors())
+
 app.use(express.static('upload'))
 app.use(
   fileUpload({

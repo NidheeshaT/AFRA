@@ -3,7 +3,8 @@ const { Canvas, Image } = require("canvas");
 const canvas = require("canvas");
 const Student=require("../models/Student")
 const Course=require("../models/Course")
-const newFace=require("../models/newFace")
+const newFace=require("../models/newFace");
+const cache = require("../ulilities/cache");
 
 
 faceapi.env.monkeyPatch({ Canvas, Image });
@@ -41,22 +42,29 @@ async function getDes(images) {
   }
 }
 
-async function matchFace(faces, image) {
-  let f=[];
-  for (i = 0; i < faces.length; i++) {
-        for (j = 0; j < faces[i].descriptions.length; j++) {
-        faces[i].descriptions[j] = new Float32Array(
-            Object.values(faces[i].descriptions[j])
-        );
+async function matchFace(code,faces, image) {
+    let f=[];
+    if(cache.code===code)
+    {
+        f=faces
+    }
+    else{
+        for (i = 0; i < faces.length; i++) {
+              for (j = 0; j < faces[i].descriptions.length; j++) {
+              faces[i].descriptions[j] = new Float32Array(
+                  Object.values(faces[i].descriptions[j])
+              );
+              }
+              f.push ( new faceapi.LabeledFaceDescriptors(faces[i].label, faces[i].descriptions))
         }
-        f.push ( new faceapi.LabeledFaceDescriptors(faces[i].label, faces[i].descriptions))
-  }
+        cache.code=code;
+        cache.faces=f
+    }
   const faceMatcher = new faceapi.FaceMatcher(f, 0.6);
   const img = await canvas.loadImage(image);
 //   let temp = faceapi.createCanvasFromMedia(img);
 //   const displaySize = { width: img.width, height: img.height };
 //   faceapi.matchDimensions(temp, displaySize);
-
   const detections = await faceapi
     .detectAllFaces(img)
     .withFaceLandmarks()
@@ -74,4 +82,32 @@ async function matchFace(faces, image) {
   return results;
 }
 
-module.exports = { faceapi,matchFace, getDes, LoadModels };
+async function matchFaceDes(code,faces,detections){
+    let f=[];
+    if(cache.code===code)
+    {
+        f=faces
+    }
+    else{
+        for (i = 0; i < faces.length; i++) {
+              for (j = 0; j < faces[i].descriptions.length; j++) {
+              faces[i].descriptions[j] = new Float32Array(
+                  Object.values(faces[i].descriptions[j])
+              );
+              }
+              f.push ( new faceapi.LabeledFaceDescriptors(faces[i].label, faces[i].descriptions))
+        }
+        cache.code=code;
+        cache.faces=f
+    }
+    const faceMatcher = new faceapi.FaceMatcher(f, 0.6);
+
+    const results = detections.map((d) =>{
+        let r=faceMatcher.findBestMatch(d.descriptor)
+        newFace.addFace(r,d.descriptor)
+        return r
+      })
+      return results;
+}
+
+module.exports = { faceapi,matchFace,matchFaceDes, getDes, LoadModels };

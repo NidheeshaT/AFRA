@@ -4,6 +4,7 @@ const Course=require("../models/Course")
 const {getDes}=require("../faceAPI/api")
 const {authAdmin}=require('../middleware/auth')
 const fs =require('fs')
+const cache = require("../ulilities/cache")
 
 const router=Router()
 
@@ -44,6 +45,10 @@ router.post("/addStudent",async(req,res)=>{
         console.log(e.message)
         res.sendStatus(500)
     }
+    if(cache.code===code)
+    {
+        cache.code=''
+    }
     clean(req)
 })
 
@@ -63,6 +68,7 @@ router.post("/addFace",async(req,res)=>{
         const flag=await Student.addFace(usn,des)
     
         res.send({flag:flag})
+        cache.code=''
     }
     catch(e)
     {
@@ -87,7 +93,22 @@ router.post("/addCourse",async(req,res)=>{
         res.status(403).send("duplication error")
     }
 })
+router.post("/addFaceDes",async(req,res)=>{
+    try{
 
+        const usn=req.body.usn;
+        const des=req.body.des
+        const flag=await Student.addFace(usn,des)
+    
+        res.send({flag:flag})
+        cache.code=''
+    }
+    catch(e)
+    {
+        console.log(e.message)
+        res.sendStatus(500)
+    }
+})
 
 const clean=(req)=>{
     try{
