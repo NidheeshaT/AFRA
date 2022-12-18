@@ -3,7 +3,8 @@ const Student=require("../models/Student")
 const Course=require("../models/Course")
 const {getDes}=require("../faceAPI/api")
 const {authAdmin}=require('../middleware/auth')
-const { randomUUID } = require("crypto")
+const fs =require('fs')
+
 const router=Router()
 
 
@@ -16,30 +17,26 @@ router.post("/addStudent",async(req,res)=>{
         Object.values(req.files).map(file => {
             images.push(file.tempFilePath)
         });
-        let image=Object.values(req.files)[0]
-    
-        const stored=randomUUID().substring(0,10)+image.name
-        const uploadPath='./upload/'+stored
-        if(image.mimetype==='image/jpeg'||image.mimetype==='image/jpg'||image.mimetype==='image/png')
-        {
-            image.mv(uploadPath)
-        }
-    
-        student.image=stored
+        console.log(req.files)
+
         const des=await getDes(images)
         if(des)
         {
-
+            let image=Object.values(req.files)[0]
+    
             student['descriptions']=des
         
-            const data=await Student.addStudent(student)
+            const data=await Student.addStudent(student,image)
             if(data){
                 res.send(data)
-                return
             }
-                
+            else{
+                res.sendStatus(400)
+            }       
         }
-        res.sendStatus(400)
+        else{
+            res.sendStatus(400)
+        }
     
     }
     catch(e)
@@ -47,7 +44,7 @@ router.post("/addStudent",async(req,res)=>{
         console.log(e.message)
         res.sendStatus(500)
     }
-
+    clean(req)
 })
 
 
@@ -72,6 +69,7 @@ router.post("/addFace",async(req,res)=>{
         console.log(e.message)
         res.sendStatus(500)
     }
+    clean(req)
 })
 
 router.post("/addCourse",async(req,res)=>{
@@ -90,5 +88,17 @@ router.post("/addCourse",async(req,res)=>{
     }
 })
 
+
+const clean=(req)=>{
+    try{
+        Object.values(req.files).map(file => {
+                fs.unlink(file.tempFilePath,()=>{})
+        });
+    }
+    catch(e)
+    {
+        console.log(e.message)
+    }
+}
 
 module.exports=router

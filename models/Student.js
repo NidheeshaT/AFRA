@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { randomUUID } = require("crypto")
 const studentSchema = new mongoose.Schema({
   label: {
     type: String,
@@ -22,11 +23,19 @@ const studentSchema = new mongoose.Schema({
 });
 
 
-studentSchema.statics.addStudent = async function(student) {
+studentSchema.statics.addStudent = async function(student,image) {
   try {
     let studentNew=await this.create(student)
     studentNew.__v=undefined
     studentNew.descriptions=undefined
+    const stored=randomUUID().substring(0,10)+image.name
+    const uploadPath='./upload/'+stored
+    if(image.mimetype==='image/jpeg'||image.mimetype==='image/jpg'||image.mimetype==='image/png')
+    {
+        image.mv(uploadPath)
+    }
+
+    studentNew.image=stored
     return studentNew
   } 
   catch (e) {

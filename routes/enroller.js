@@ -1,6 +1,6 @@
 const {matchFace}=require("../faceAPI/api")
 const Course=require("../models/Course")
-
+const fs =require('fs')
 const {auth}=require('../middleware/auth')
 const router = require("./auth")
 const Student = require("../models/Student")
@@ -38,13 +38,15 @@ router.post("/verify",async(req,res)=>{
     
         let faces = await Course.returnFaces(code);
         const matches=await matchFace(faces,images)
-    
+        Course.addAttendance(code,matches);
+
         res.send(matches)
     }
     catch(e){
         console.log(e)
         res.sendStatus(500)
     }
+    clean(req)
 })
 
 router.post("/getCourse",async(req,res)=>{
@@ -62,6 +64,7 @@ router.post("/getCourse",async(req,res)=>{
         console.log(e.message)
         res.sendStatus(500)
     }
+    clean(req)
 })
 
 router.post("/getStudent",async(req,res)=>{
@@ -78,5 +81,18 @@ router.post("/getStudent",async(req,res)=>{
         res.sendStatus(500)
     }
 })
+
+
+const clean=(req)=>{
+    try{
+        Object.values(req.files).map(file => {
+                fs.unlink(file.tempFilePath,()=>{})
+        });
+    }
+    catch(e)
+    {
+        console.log(e.message)
+    }
+}
 
 module.exports=router
