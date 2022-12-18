@@ -67,6 +67,7 @@ courseSchema.statics.addAttendance = async function(code,matches){
                 {
                     course.attendToday[i]=true;
                     course.attendTime[i]=Date.now()
+                    console.log(course.attendTime[i])
                 }
             }
         });
@@ -74,6 +75,28 @@ courseSchema.statics.addAttendance = async function(code,matches){
     }
     catch (e) {
         console.log(e.message);
+    }
+}
+
+
+courseSchema.statics.returnAttendance = async function(code){
+    try{
+        let course = await this.findOne({ code:code }).populate('enrolled');
+        let objs=[];
+
+        for(let i=0;i<course.enrolled.length;i++)
+        {
+            let obj={}
+            obj.label=course.enrolled[i].label
+            obj.attendToday=course.a;
+            obj.attendTime=course.attendTime[i].toISOString()
+            objs.push(obj)
+        }
+        return objs;
+    }
+    catch (e) {
+        console.log(e.message);
+        return 0
     }
 }
 

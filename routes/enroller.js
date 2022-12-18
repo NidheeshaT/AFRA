@@ -82,6 +82,7 @@ router.post("/getStudent",async(req,res)=>{
     }
 })
 
+// router.post("/getAttendance"
 
 const clean=(req)=>{
     try{
