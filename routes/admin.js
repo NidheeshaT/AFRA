@@ -42,7 +42,7 @@ router.post("/addStudent",async(req,res)=>{
     }
     catch(e)
     {
-        console.log(e.message)
+        console.log(e)
         res.sendStatus(500)
     }
     cache.code=''

@@ -43,14 +43,23 @@ courseSchema.statics.getInfo = async function(code) {
 };
 courseSchema.statics.addStudents = async function(code,usn) {
     try {
-      let course = await this.findOne({ code:code });
+      let course = await this.findOne({ code:code }).populate('enrolled');
       let student=await Student.findOne({label:usn})
-
-    course.enrolled.push(student._id)
-    course.attendToday.push(false)
-    course.attendTime.push(0)
-      course.save()
-      return 1
+        let flag=true;
+      for(let i=0;i<course.enrolled.length;i++)
+      {
+        if(usn===course.enrolled[i].label)
+            flag=false
+      }
+      if(flag)
+      {
+          course.enrolled.push(student._id)
+          course.attendToday.push(false)
+          course.attendTime.push(0)
+          course.save()
+          return 1
+      }
+      return 0
     } 
     catch (e) {
       console.log(e);
